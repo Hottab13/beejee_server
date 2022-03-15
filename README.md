@@ -20,4 +20,6 @@ Start the application:
 npm run dev
 ```
 
-The server will be running on (http://localhost:3005/graphql).
+The server will be running on (http://localhost:4741/).
+
+
