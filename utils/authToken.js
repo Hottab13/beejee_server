@@ -2,6 +2,8 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const handlErr = require('../utils/handlErr');
 require('dotenv').config();
+const chalk = require('chalk');
+const SuccessMsg = chalk.bgWhite.green;
 
 const authenticateToken = (req, res, next) => {
     const token = req.headers['authorization']
@@ -9,7 +11,7 @@ const authenticateToken = (req, res, next) => {
     if (token == null) return handlErr("Ошибка! Отсутствует токен аунтификации!",res.status(401))
     jwt.verify(token, process.env.TOKEN_KEY, (err, user) => {
       if (err) return handlErr(err.message,res.status(403))
-      console.log(user.email)
+      console.log(SuccessMsg(user.email))
       User
         .findOne({
           email:user.email

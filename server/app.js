@@ -7,22 +7,24 @@ const imgRouter = require(`../routes/img-routes`);
 const authenticationRouter = require(`../routes/authentication-routes`);
 const app = express();
 require('dotenv').config();
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
+const chalk = require('chalk');
 
+const ErrorMsg = chalk.bgWhite.red;
+const SuccessMsg = chalk.bgWhite.green;
 
 mongoose
   .connect(process.env.DATA_BASE_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
-  .then(() => console.log('Connected to the database!'))
-  .catch((err) => console.log(err.message));
+  .then(() => console.log(SuccessMsg('Connected to the database!')))
+  .catch((err) => console.log(ErrorMsg(err.message)));
 
 app.listen(process.env.PORT, err => {
-  err ? console.log(err) : console.log(`Server started, port:${process.env.PORT}!`);
+  err ? console.log(ErrorMsg(err)) : console.log(SuccessMsg(`Server started, port:${chalk.red(process.env.PORT)}!`));
 });
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms')); //логер
-//app.use(express.urlencoded({extended: false}));
+app.use(morgan(SuccessMsg(':method :url :status :res[content-length] - :response-time ms')));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
