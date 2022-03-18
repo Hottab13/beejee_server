@@ -13,6 +13,7 @@ const getUsers = (req, res) => {
         .find({
             /* фильтр */
         }, '-password -field')
+        .limit(20)
         .sort({
             createdAt: -1
         })

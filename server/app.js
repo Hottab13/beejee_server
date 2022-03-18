@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const eventRouter = require(`../routes/event-routes`);
 const usertRouter = require(`../routes/user-routes`);
 const imgRouter = require(`../routes/img-routes`);
+const messageRouter = require(`../routes/message-routes`);
 const authenticationRouter = require(`../routes/authentication-routes`);
 const app = express();
 require('dotenv').config();
@@ -15,6 +16,7 @@ const SuccessMsg = chalk.bgWhite.green;
 
 mongoose
   .connect(process.env.DATA_BASE_URL, {
+    useFindAndModify: false,
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
@@ -32,3 +34,4 @@ app.use(eventRouter);
 app.use(usertRouter);
 app.use(authenticationRouter);
 app.use(imgRouter);
+app.use(messageRouter);

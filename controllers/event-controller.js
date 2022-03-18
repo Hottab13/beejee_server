@@ -12,6 +12,7 @@ const getEventsUser = (req, res) => {
         .find({
             userId: req.params.id
         })
+        .limit(20)
         .sort({
             createdAt: -1
         })
@@ -21,6 +22,7 @@ const getEventsUser = (req, res) => {
 const getEvents = (req, res) => {
     Event
         .find()
+        .limit(20)
         .sort({
             createdAt: -1
         })
@@ -38,20 +40,23 @@ const postAddEvent = (req, res) => {
         finalData,
         ageRestrictions,
         amountMaximum,
-        userId,
+        users,
         imgAvatarId
     } = req.body;
+
     const event = new Event({
         name,
-        locationLat,
-        locationLon,
+        location:{
+            lat:locationLat,
+            lon:locationLon
+        },
         address,
         city,
         type,
         finalData,
         ageRestrictions,
         amountMaximum,
-        userId,
+        users,
         imgAvatarId
     })
     event
@@ -75,7 +80,7 @@ const putEvent = (req, res) => {
         finalData,
         ageRestrictions,
         amountMaximum,
-        userId,
+        users,
         imgAvatarId
     } = req.body;
     const {
@@ -91,7 +96,7 @@ const putEvent = (req, res) => {
             finalData,
             ageRestrictions,
             amountMaximum,
-            userId,
+            users,
             imgAvatarId
         })
         .then(() => res.sendStatus(200))

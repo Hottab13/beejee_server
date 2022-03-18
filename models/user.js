@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const userSchema = new Schema({
+const dateAge = new Date();
+dateAge.setDate(dateAge.getDate() - 4380);
+const userSchema = mongoose.Schema({
     email:{
         type:String,
         required:true
@@ -15,31 +16,26 @@ const userSchema = new Schema({
     },
     surname:{
         type:String,
-        //required:true
     },
     sex:{
-        type:String,
-        //required:true
+        type:Boolean,
     },
     age:{
-        type:String,
-        //required:true
+        type:Date,
+        min: '1925-00-00',
+        max: dateAge
     },
     status:{
         type:String,
-        //required:true
     },
     aboutMe:{
         type:String,
-        //required:true
     },
     imgAvatarId:{
-        type:String,
-        //required:true
-    },
-},{timestamps:true})// вторым аргументом конструктора можно добавить атрибут, например для записи времени создания
+        type:mongoose.Schema.Types.ObjectId
+    }
+},{timestamps:true})
 
-const User = mongoose.model(`User`, userSchema );/*создание модели, имя пишется с большой буквы как 
-и имя конструктора, внутрь передаётся 2 аргумента, 1 это имя модели, 2 имя схемы, которая данная модель будет использовтаь*/
+const User = mongoose.model(`User`, userSchema );
 
 module.exports = User;

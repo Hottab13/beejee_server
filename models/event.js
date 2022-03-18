@@ -1,38 +1,40 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 const nowDate = new Date();
-const nowDate_300 = new Date();
-nowDate_300.setDate(nowDate_300.getDate() + 300);
-const eventSchema = new Schema({
-    name:{
-        type:String,
-        required:true
-    },
-    locationLat: {
-        type: mongoose.Decimal128,
+const nowDate_365 = new Date();
+nowDate_365.setDate(nowDate_365.getDate() + 365);
+
+const eventSchema = mongoose.Schema({
+    name: {
+        type: String,
         required: true
+    },
+    location: {
+        lat: {
+            type: mongoose.Decimal128,
+            required: true
         },
-    locationLon: {
-        type: mongoose.Decimal128,
+        lon: {
+            type: mongoose.Decimal128,
+            required: true
+        },
+    },
+    address: {
+        type: String,
         required: true
-        },
-    address:{
-        type:String,
-        required:true
     },
-    city:{
-        type:String,
-        required:true
+    city: {
+        type: String,
+        required: true
     },
-    type:{
-        type:String,
-        required:true
+    type: {
+        type: String,
+        required: true
     },
-    finalData:{
-        type:Date,
+    finalData: {
+        type: Date,
         min: nowDate,
-        max: nowDate_300,
-        required:true
+        max: nowDate_365,
+        required: true
     },
     ageRestrictions: {
         type: Number,
@@ -40,19 +42,22 @@ const eventSchema = new Schema({
         max: 65,
         required: true
     },
-    amountMaximum:{
-        type:Number,
-        required:true
+    amountMaximum: {
+        type: Number,
+        required: true
     },
-    userId:{
-        type:Schema.Types.ObjectId,
-        required:true
+    users: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }],
+    imgAvatarId: {
+        type: mongoose.Schema.Types.ObjectId,
     },
-    imgAvatarId:{
-        type:Schema.Types.ObjectId,
-    },
-   
-},{timestamps:true})// вторым аргументом конструктора можно добавить атрибут, например для записи времени создания
 
-const Event = mongoose.model(`Event`, eventSchema );
+}, {
+    timestamps: true
+})
+
+const Event = mongoose.model(`Event`, eventSchema);
 module.exports = Event;
