@@ -10,7 +10,7 @@ const app = express();
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const chalk = require('chalk');
-var cors = require('cors');
+const cors = require('cors');
 
 // use it before all route definitions
 
