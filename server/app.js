@@ -13,7 +13,7 @@ const chalk = require('chalk');
 var cors = require('cors');
 
 // use it before all route definitions
-app.use(cors({origin: '*'}));
+app.use(cors());
 
 const ErrorMsg = chalk.bgWhite.red;
 const SuccessMsg = chalk.bgWhite.green;
