@@ -10,6 +10,10 @@ const app = express();
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const chalk = require('chalk');
+var cors = require('cors');
+
+// use it before all route definitions
+app.use(cors({origin: 'http://localhost:3000'}));
 
 const ErrorMsg = chalk.bgWhite.red;
 const SuccessMsg = chalk.bgWhite.green;
