@@ -30,8 +30,7 @@ mongoose
 app.listen(process.env.PORT, err => {
   err ? console.log(ErrorMsg(err)) : console.log(SuccessMsg(`Server started, port:${chalk.red(process.env.PORT)}!`));
 });
-app.options('*', cors())
-//app.use(cors());
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(morgan(SuccessMsg(':method :url :status :res[content-length] - :response-time ms')));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
