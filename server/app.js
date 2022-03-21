@@ -16,7 +16,7 @@ const cors = require('cors');
 
 
 const ErrorMsg = chalk.bgWhite.red;
-const SuccessMsg = chalk.bgWhite.green;
+const SuccessMsg = chalk.green;
 
 mongoose
   .connect(process.env.DATA_BASE_URL, {
