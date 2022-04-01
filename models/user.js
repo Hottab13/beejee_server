@@ -22,8 +22,8 @@ const userSchema = mongoose.Schema({
     },
     age:{
         type:Date,
-        min: '1925-00-00',
-        max: dateAge
+        //min: '1925-00-00',
+        //max: dateAge
     },
     status:{
         type:String,
