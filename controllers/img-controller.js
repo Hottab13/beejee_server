@@ -5,12 +5,11 @@ var path = require('path');
 var sharp = require('sharp');
 
 const getImg = (req, res) => {
-    console.log(res.file)
     ImgModel
         .findById(req.params.id)
         .then((img) => {
             res.status(200).json(img)
-            console.log(res.file)
+            fs.unlinkSync(path.join(__dirname, '../uploads', req.file.filename))
         })
         .catch((err) => handlErr(err.message, res.status(500)))
 }
