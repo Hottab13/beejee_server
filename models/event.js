@@ -30,12 +30,12 @@ const eventSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    finalData: {
+    dateOfTheEvent:[ {
         type: Date,
-        min: nowDate,
-        max: nowDate_365,
-        required: true
-    },
+        //min: nowDate,
+        //max: nowDate_365,
+        //required: true
+    }],
     ageRestrictions: {
         type: Number,
         min: 18,
@@ -49,10 +49,18 @@ const eventSchema = mongoose.Schema({
     users: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+       // required: true
     }],
     imgAvatarId: {
         type: mongoose.Schema.Types.ObjectId,
+    },
+    ownerUser: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
     },
 
 }, {

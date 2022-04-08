@@ -39,11 +39,13 @@ const postAddEvent = (req, res) => {
         address,
         city,
         type,
-        finalData,
+        dateOfTheEvent,
         ageRestrictions,
         amountMaximum,
         users,
-        imgAvatarId
+        imgAvatarId,
+        ownerUser,
+        description
     } = req.body;
 
     const event = new Event({
@@ -55,11 +57,13 @@ const postAddEvent = (req, res) => {
         address,
         city,
         type,
-        finalData,
+        dateOfTheEvent,
         ageRestrictions,
         amountMaximum,
         users,
-        imgAvatarId
+        imgAvatarId,
+        ownerUser,
+        description
     })
     event
         .save()
