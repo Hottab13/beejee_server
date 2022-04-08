@@ -9,7 +9,7 @@ const getImg = (req, res) => {
         .findById(req.params.id)
         .then((img) => {
             res.status(200).json(img)
-            fs.unlinkSync(path.join(__dirname, '../uploads', req.file.filename))
+            //fs.unlinkSync(path.join(__dirname, '../uploads', req.file.filename))
         })
         .catch((err) => handlErr(err.message, res.status(500)))
 }
