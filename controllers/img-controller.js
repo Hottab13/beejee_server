@@ -14,14 +14,14 @@ const getImg = (req, res) => {
         .catch((err) => handlErr(err.message, res.status(500)))
 }
 
-const postAddImg = (req, res) => {
-    sharp(path.join(__dirname, '../uploads', req.file.filename)).resize(48, 48)
+const postAddImg = async(req, res) => {
+    await sharp(path.join(__dirname, '../uploads', req.file.filename)).resize(48, 48)
         .jpeg({
             quality: 50
         }).toFile(path.join(__dirname, '../uploads',
             '/avatar_thumb.jpg'));
 
-    sharp(path.join(__dirname, '../uploads', req.file.filename)).resize(1000, 1000)
+            await sharp(path.join(__dirname, '../uploads', req.file.filename)).resize(1000, 1000)
         .jpeg({
             quality: 80
         }).toFile(path.join(__dirname, '../uploads',
