@@ -1,5 +1,9 @@
 const Event = require('../models/event');
 const handlErr = require('../utils/handlErr');
+var sharp = require('sharp');
+var fs = require('fs');
+var path = require('path');
+
 
 const getEvent = (req, res) => {
     Event
@@ -31,7 +35,20 @@ const getEvents = (req, res) => {
         })
         .catch((err) => handlErr(err.message, res.status(500)))
 }
-const postAddEvent = (req, res) => {
+const postAddEvent =  async (req, res) => {
+    console.log(req.file)
+    console.log(req.body)
+    await sharp(path.join(__dirname, '../uploads', req.file.filename)).resize(200, 200)
+        .jpeg({
+            quality: 50
+        }).toFile(path.join(__dirname, '../uploads',
+            '/avatar_thumb.jpg'));
+
+            await sharp(path.join(__dirname, '../uploads', req.file.filename)).resize(1000, 1000)
+        .jpeg({
+            quality: 80
+        }).toFile(path.join(__dirname, '../uploads',
+            '/avatar_preview.jpg'));
     const {
         name,
         locationLat,
@@ -43,11 +60,10 @@ const postAddEvent = (req, res) => {
         ageRestrictions,
         amountMaximum,
         users,
-        imgAvatarId,
         ownerUser,
         description
     } = req.body;
-
+    
     const event = new Event({
         name,
         location:{
@@ -61,7 +77,20 @@ const postAddEvent = (req, res) => {
         ageRestrictions,
         amountMaximum,
         users,
-        imgAvatarId,
+        imgAvatar:{
+            img_200_200: {
+                data: fs.readFileSync(path.join(__dirname, '../uploads',
+                    '/avatar_thumb.jpg')),
+                contentType: 'jpg',
+                originalname: req.file.originalname
+            },
+            img_1000_1000: {
+                data: fs.readFileSync(path.join(__dirname, '../uploads',
+                    '/avatar_preview.jpg')),
+                contentType: 'jpg',
+                originalname: req.file.originalname
+            },
+        },
         ownerUser,
         description
     })

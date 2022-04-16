@@ -11,10 +11,7 @@ require('dotenv').config();
 const bodyParser = require('body-parser');
 const chalk = require('chalk');
 const cors = require('cors');
-
 // use it before all route definitions
-
-
 const ErrorMsg = chalk.bgWhite.red;
 const SuccessMsg = chalk.green;
 

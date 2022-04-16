@@ -11,11 +11,11 @@ const eventSchema = mongoose.Schema({
     location: {
         lat: {
             type: mongoose.Decimal128,
-            required: true
+            //required: true
         },
         lon: {
             type: mongoose.Decimal128,
-            required: true
+            //required: true
         },
     },
     address: {
@@ -30,7 +30,8 @@ const eventSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    dateOfTheEvent:[ {
+    dateOfTheEvent:[{
+        //type: String
         type: Date,
         //min: nowDate,
         //max: nowDate_365,
@@ -51,8 +52,19 @@ const eventSchema = mongoose.Schema({
         ref: 'User',
        // required: true
     }],
-    imgAvatarId: {
-        type: mongoose.Schema.Types.ObjectId,
+    imgAvatar: {
+        img_200_200:
+        {
+            data: Buffer,
+            contentType: String,
+            originalname: String
+        },
+        img_1000_1000:
+        {
+            data: Buffer,
+            contentType: String,
+            originalname: String
+        }
     },
     ownerUser: {
         type: String,

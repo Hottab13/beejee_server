@@ -31,9 +31,20 @@ const userSchema = mongoose.Schema({
     aboutMe:{
         type:String,
     },
-    imgAvatarId:{
-        type:mongoose.Schema.Types.ObjectId
-    }
+    imgAvatar: {
+        img_200_200:
+        {
+            data: Buffer,
+            contentType: String,
+            originalname: String
+        },
+        img_1000_1000:
+        {
+            data: Buffer,
+            contentType: String,
+            originalname: String
+        }
+    },
 },{timestamps:true})
 
 const User = mongoose.model(`User`, userSchema );

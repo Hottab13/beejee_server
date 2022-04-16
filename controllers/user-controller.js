@@ -1,5 +1,8 @@
 const User = require('../models/user');
 const handlErr = require('../utils/handlErr');
+var sharp = require('sharp');
+var fs = require('fs');
+var path = require('path');
 
 const getUser = (req, res) => {
     User
@@ -28,7 +31,18 @@ const deleteUser = (req, res) => {
         .catch((err) => handlErr(err.message, res.status(500)))
 }
 
-const putUser = (req, res) => {
+const  putUser = async(req, res) => {
+    await sharp(path.join(__dirname, '../uploads', req.file.filename)).resize(200, 200)
+    .jpeg({
+        quality: 50
+    }).toFile(path.join(__dirname, '../uploads',
+        '/avatar_thumb.jpg'));
+
+        await sharp(path.join(__dirname, '../uploads', req.file.filename)).resize(1000, 1000)
+    .jpeg({
+        quality: 80
+    }).toFile(path.join(__dirname, '../uploads',
+        '/avatar_preview.jpg'));
     const {
         email,
         password,
@@ -38,7 +52,6 @@ const putUser = (req, res) => {
         age,
         status,
         aboutMe,
-        imgAvatarId
     } = req.body;
     const {
         id
@@ -53,7 +66,20 @@ const putUser = (req, res) => {
             age,
             status,
             aboutMe,
-            imgAvatarId
+            imgAvatar:{
+                img_200_200: {
+                    data: fs.readFileSync(path.join(__dirname, '../uploads',
+                        '/avatar_thumb.jpg')),
+                    contentType: 'jpg',
+                    originalname: req.file.originalname
+                },
+                img_1000_1000: {
+                    data: fs.readFileSync(path.join(__dirname, '../uploads',
+                        '/avatar_preview.jpg')),
+                    contentType: 'jpg',
+                    originalname: req.file.originalname
+                },
+            },
         })
         .then(() => res.sendStatus(200))
         .catch((err) => handlErr(err.message, res.status(500)))
