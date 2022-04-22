@@ -47,23 +47,11 @@ const postRegistration = (req, res) => {
         email,
         password,
         name,
-        surname,
-        sex,
-        age,
-        status,
-        aboutMe,
-        imgAvatarId
     } = req.body;
     const user = new User({
         email,
         password,
         name,
-        surname,
-        sex,
-        age,
-        status,
-        aboutMe,
-        imgAvatarId
     })
     user
         .save()

@@ -32,6 +32,8 @@ const deleteUser = (req, res) => {
 }
 
 const  putUser = async(req, res) => {
+    console.log(req.body)
+    console.log(req.params)
     await sharp(path.join(__dirname, '../uploads', req.file.filename)).resize(200, 200)
     .jpeg({
         quality: 50

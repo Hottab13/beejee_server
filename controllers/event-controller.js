@@ -14,7 +14,7 @@ const getEvent = (req, res) => {
 const getEventsUser = (req, res) => {
     Event
         .find({
-            userId: req.params.id
+            ownerUser: req.params.id
         })
         .limit(20)
         .sort({
@@ -26,7 +26,7 @@ const getEventsUser = (req, res) => {
 const getEvents = (req, res) => {
     Event
         .find()
-        .limit(20)
+        .limit(36)
         .sort({
             createdAt: -1
         })
@@ -36,8 +36,6 @@ const getEvents = (req, res) => {
         .catch((err) => handlErr(err.message, res.status(500)))
 }
 const postAddEvent =  async (req, res) => {
-    console.log(req.file)
-    console.log(req.body)
     await sharp(path.join(__dirname, '../uploads', req.file.filename)).resize(200, 200)
         .jpeg({
             quality: 50
@@ -106,17 +104,21 @@ const deleteEvent = (req, res) => {
         .catch((err) => handlErr(err.message, res.status(500)))
 }
 const putEvent = (req, res) => {
+    console.log(req.body)
+    console.log(req.params)
+    console.log(req.file)
     const {
         name,
-        location,
+        //location,
         address,
         city,
         type,
-        finalData,
+        dateOfTheEvent,
         ageRestrictions,
         amountMaximum,
         users,
-        imgAvatarId
+        ownerUser,
+        description,
     } = req.body;
     const {
         id
@@ -124,17 +126,48 @@ const putEvent = (req, res) => {
     Event
         .findByIdAndUpdate(id, {
             name,
-            location,
+           // location,
             address,
             city,
             type,
-            finalData,
+            dateOfTheEvent,
             ageRestrictions,
             amountMaximum,
             users,
-            imgAvatarId
+            /*imgAvatar:{
+                img_200_200,
+                img_1000_1000,
+            },*/
+            ownerUser,
+            description
         })
         .then(() => res.sendStatus(200))
+        .catch((err) => handlErr(err.message, res.status(500)))
+} 
+const ubdateMembersEvent = (req, res) => {
+    const {
+        amountMaximum,
+        users,
+    } = req.body;
+    Event
+        .findByIdAndUpdate(req.params.id, {
+            amountMaximum,
+            users,
+        })
+        .then(() => res.sendStatus(200))
+        .catch((err) => handlErr(err.message, res.status(500)))
+}
+const filtrEvent = (req, res) => {
+console.log(req.body.filtrEvents)
+    Event
+        .find({
+            city:req.body.city
+        })
+        .limit(20)
+        .sort({
+            createdAt: -1
+        })
+        .then((event) => res.status(200).json(event))
         .catch((err) => handlErr(err.message, res.status(500)))
 }
 module.exports = {
@@ -143,5 +176,7 @@ module.exports = {
     postAddEvent,
     deleteEvent,
     putEvent,
-    getEventsUser
+    getEventsUser,
+    ubdateMembersEvent,
+    filtrEvent
 }
