@@ -25,7 +25,9 @@ const getEventsUser = (req, res) => {
 }
 const getEvents = (req, res) => {
     Event
-        .find()
+        .find({
+            /* фильтр */
+        }, '-imgAvatar.img_1000_1000 -field')
         .limit(36)
         .sort({
             createdAt: -1
@@ -158,10 +160,25 @@ const ubdateMembersEvent = (req, res) => {
         .catch((err) => handlErr(err.message, res.status(500)))
 }
 const filtrEvent = (req, res) => {
-console.log(req.body.filtrEvents)
+console.log(req.body)
+
     Event
         .find({
-            city:req.body.city
+            /*$and: [
+                {*/
+                  $or: [
+                    { city: req.body.city },
+                   { type: req.body.type }
+                  ]
+               /* },
+                {
+                  $or: [
+                    { city: req.body.city },
+                { type: req.body.type }
+                  ]
+                }
+              ]*/
+
         })
         .limit(20)
         .sort({
