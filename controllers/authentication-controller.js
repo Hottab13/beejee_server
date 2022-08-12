@@ -18,7 +18,7 @@ const getLogin = (req, res) => {
                 const token = generateAccessToken({
                     email: req.body.email
                 },
-                result._id
+                result//._id
             );
                 res.status(200).json(token)
             } else {

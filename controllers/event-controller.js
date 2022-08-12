@@ -26,8 +26,11 @@ const getEventsUser = (req, res) => {
 const getEvents = (req, res) => {
     Event
         .find({
+            //dateOfTheEvent:{ $gt: new Dete()}
             /* фильтр */
-        }, '-imgAvatar.img_1000_1000 -field')
+        }, '-imgAvatar.img_1000_1000 -field'
+        )
+        //{"dateOfTheEvent":{"$lt":new Date()}}
         .limit(36)
         .sort({
             createdAt: -1
@@ -161,16 +164,20 @@ const ubdateMembersEvent = (req, res) => {
 }
 const filtrEvent = (req, res) => {
 console.log(req.body)
-
-    Event
-        .find({
-            /*$and: [
+/*switch (req.body) {
+    case stutus:
+        console/log("попал")
+      return 
+      default: return }*/
+    Event.find({
+      /*$and: [
                 {*/
-                  $or: [
-                    { city: req.body.city },
-                   { type: req.body.type }
-                  ]
-               /* },
+      $or: [
+        { city: req.body.city },
+        { type: req.body.type },
+        { dateOfTheEvent: { $lt: req.body.status } },
+      ],
+      /* },
                 {
                   $or: [
                     { city: req.body.city },
@@ -178,14 +185,13 @@ console.log(req.body)
                   ]
                 }
               ]*/
-
-        })
-        .limit(20)
-        .sort({
-            createdAt: -1
-        })
-        .then((event) => res.status(200).json(event))
-        .catch((err) => handlErr(err.message, res.status(500)))
+    })
+      .limit(36)
+      .sort({
+        createdAt: -1,
+      })
+      .then((event) => res.status(200).json(event))
+      .catch((err) => handlErr(err.message, res.status(500)));
 }
 module.exports = {
     getEvent,
