@@ -1,205 +1,110 @@
-const Event = require('../models/event');
-const handlErr = require('../utils/handlErr');
-var sharp = require('sharp');
-var fs = require('fs');
-var path = require('path');
+const {
+  getEventServise,
+  allEventsServise,
+  filtrEventServise,
+  addUserEventServise,
+  delUserEventServise,
+  createEventServise,
+  deleteEventServise,
+  createEventImgServise,
+  editEventDataServise,
+} = require("../service/event-service");
 
+const getAllEvents = async (req, res, next) => {
+  try {
+    const events = await allEventsServise();
+    return res.json(events);
+  } catch (e) {
+    next(e);
+  }
+};
+const postFiltrEvent = async (req, res, next) => {
+  try {
+    const params = req.body;
+    const filtrEventsRes = await filtrEventServise(params);
+    return res.json(filtrEventsRes);
+  } catch (e) {
+    next(e);
+  }
+};
+const getEvent = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const eventProfile = await getEventServise(id);
+    return res.json(eventProfile);
+  } catch (e) {
+    next(e);
+  }
+};
+const addUserEvent = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
+    const resAddUserEvent = await addUserEventServise(id, userId);
+    return res.json(resAddUserEvent);
+  } catch (e) {
+    next(e);
+  }
+};
+const createEvent = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const data = req.body;
+    const resСreateEvent = await createEventServise(id, data);
+    return res.json(resСreateEvent);
+  } catch (e) {
+    next(e);
+  }
+};
+const createEventImg = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const fileData = req.file;
+    const responseCreateEventImg = await createEventImgServise(fileData, id);
+    res.json(responseCreateEventImg);
+    return res.json(responseCreateEventImg);
+  } catch (e) {
+    next(e);
+  }
+};
+const deleteEvent = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const resDeleteEvent = await deleteEventServise(id);
+    return res.json(resDeleteEvent);
+  } catch (e) {
+    next(e);
+  }
+};
+const delUserEvent = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
+    const resDelUserEvent = await delUserEventServise(id, userId);
+    return res.json(resDelUserEvent);
+  } catch (e) {
+    next(e);
+  }
+};
+const editEventData = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const data = req.body;
+    const resEditEvent = await editEventDataServise(id, data);
+    return res.json(resEditEvent);
+  } catch (e) {
+    next(e);
+  }
+};
 
-const getEvent = (req, res) => {
-    Event
-        .findById(req.params.id)
-        .then((event) => res.status(200).json(event))
-        .catch((err) => handlErr(err.message, res.status(500)))
-}
-const getEventsUser = (req, res) => {
-    Event
-        .find({
-            ownerUser: req.params.id
-        })
-        .limit(20)
-        .sort({
-            createdAt: -1
-        })
-        .then((event) => res.status(200).json(event))
-        .catch((err) => handlErr(err.message, res.status(500)))
-}
-const getEvents = (req, res) => {
-    Event
-        .find({
-            //dateOfTheEvent:{ $gt: new Dete()}
-            /* фильтр */
-        }, '-imgAvatar.img_1000_1000 -field'
-        )
-        //{"dateOfTheEvent":{"$lt":new Date()}}
-        .limit(36)
-        .sort({
-            createdAt: -1
-        })
-        .then((events) => {
-            res.status(200).json(events)
-        })
-        .catch((err) => handlErr(err.message, res.status(500)))
-}
-const postAddEvent =  async (req, res) => {
-    await sharp(path.join(__dirname, '../uploads', req.file.filename)).resize(200, 200)
-        .jpeg({
-            quality: 50
-        }).toFile(path.join(__dirname, '../uploads',
-            '/avatar_thumb.jpg'));
-
-            await sharp(path.join(__dirname, '../uploads', req.file.filename)).resize(1000, 1000)
-        .jpeg({
-            quality: 80
-        }).toFile(path.join(__dirname, '../uploads',
-            '/avatar_preview.jpg'));
-    const {
-        name,
-        locationLat,
-        locationLon,
-        address,
-        city,
-        type,
-        dateOfTheEvent,
-        ageRestrictions,
-        amountMaximum,
-        users,
-        ownerUser,
-        description
-    } = req.body;
-    
-    const event = new Event({
-        name,
-        location:{
-            lat:locationLat,
-            lon:locationLon
-        },
-        address,
-        city,
-        type,
-        dateOfTheEvent,
-        ageRestrictions,
-        amountMaximum,
-        users,
-        imgAvatar:{
-            img_200_200: {
-                data: fs.readFileSync(path.join(__dirname, '../uploads',
-                    '/avatar_thumb.jpg')),
-                contentType: 'jpg',
-                originalname: req.file.originalname
-            },
-            img_1000_1000: {
-                data: fs.readFileSync(path.join(__dirname, '../uploads',
-                    '/avatar_preview.jpg')),
-                contentType: 'jpg',
-                originalname: req.file.originalname
-            },
-        },
-        ownerUser,
-        description
-    })
-    event
-        .save()
-        .then((result) => res.status(200).json(result))
-        .catch((err) => handlErr(err.message, res.status(500)));
-}
-const deleteEvent = (req, res) => {
-    Event
-        .findByIdAndDelete(req.params.id)
-        .then(() => res.sendStatus(200))
-        .catch((err) => handlErr(err.message, res.status(500)))
-}
-const putEvent = (req, res) => {
-    console.log(req.body)
-    console.log(req.params)
-    console.log(req.file)
-    const {
-        name,
-        //location,
-        address,
-        city,
-        type,
-        dateOfTheEvent,
-        ageRestrictions,
-        amountMaximum,
-        users,
-        ownerUser,
-        description,
-    } = req.body;
-    const {
-        id
-    } = req.params;
-    Event
-        .findByIdAndUpdate(id, {
-            name,
-           // location,
-            address,
-            city,
-            type,
-            dateOfTheEvent,
-            ageRestrictions,
-            amountMaximum,
-            users,
-            /*imgAvatar:{
-                img_200_200,
-                img_1000_1000,
-            },*/
-            ownerUser,
-            description
-        })
-        .then(() => res.sendStatus(200))
-        .catch((err) => handlErr(err.message, res.status(500)))
-} 
-const ubdateMembersEvent = (req, res) => {
-    const {
-        amountMaximum,
-        users,
-    } = req.body;
-    Event
-        .findByIdAndUpdate(req.params.id, {
-            amountMaximum,
-            users,
-        })
-        .then(() => res.sendStatus(200))
-        .catch((err) => handlErr(err.message, res.status(500)))
-}
-const filtrEvent = (req, res) => {
-console.log(req.body)
-/*switch (req.body) {
-    case stutus:
-        console/log("попал")
-      return 
-      default: return }*/
-    Event.find({
-      /*$and: [
-                {*/
-      $or: [
-        { city: req.body.city },
-        { type: req.body.type },
-        { dateOfTheEvent: { $lt: req.body.status } },
-      ],
-      /* },
-                {
-                  $or: [
-                    { city: req.body.city },
-                { type: req.body.type }
-                  ]
-                }
-              ]*/
-    })
-      .limit(36)
-      .sort({
-        createdAt: -1,
-      })
-      .then((event) => res.status(200).json(event))
-      .catch((err) => handlErr(err.message, res.status(500)));
-}
 module.exports = {
-    getEvent,
-    getEvents,
-    postAddEvent,
-    deleteEvent,
-    putEvent,
-    getEventsUser,
-    ubdateMembersEvent,
-    filtrEvent
-}
+  getAllEvents,
+  postFiltrEvent,
+  getEvent,
+  addUserEvent,
+  delUserEvent,
+  createEvent,
+  createEventImg,
+  deleteEvent,
+  editEventData,
+};

@@ -1,39 +1,47 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const morgan = require('morgan');
+const express = require("express");
+const mongoose = require("mongoose");
+const chalk = require("chalk");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+require("dotenv").config();
+
 const eventRouter = require(`../routes/event-routes`);
 const usertRouter = require(`../routes/user-routes`);
-const imgRouter = require(`../routes/img-routes`);
-const messageRouter = require(`../routes/message-routes`);
 const authenticationRouter = require(`../routes/authentication-routes`);
+const errorsMiddlewares = require(`../middlewares/errors-middlewares`);
+
+
 const app = express();
-require('dotenv').config();
-const bodyParser = require('body-parser');
-const chalk = require('chalk');
-const cors = require('cors');
-// use it before all route definitions
+const PORT = process.env.PORT || 5000;
 const ErrorMsg = chalk.bgWhite.red;
 const SuccessMsg = chalk.green;
 
-mongoose
-  .connect(process.env.DATA_BASE_URL, {
-    useFindAndModify: false,
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  .then(() => console.log(SuccessMsg('Connected to the database!')))
-  .catch((err) => console.log(ErrorMsg(err.message)));
+app.use(express.json());
+app.use(cors({ credentials: true, origin: `${process.env.CLIENT_URL}` }));
+app.use(cookieParser());
+app.use("/api", eventRouter);
+app.use("/api", authenticationRouter);
+app.use("/api", usertRouter);
+app.use(errorsMiddlewares);
 
-app.listen(process.env.PORT, err => {
-  err ? console.log(ErrorMsg(err)) : console.log(SuccessMsg(`Server started, порт:${chalk.red(process.env.PORT)}!`));
-});
-app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
-app.use(morgan(SuccessMsg(':method :url :status :res[content-length] - :response-time ms')));
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+const start = async () => {
+  try {
+    await mongoose
+      .connect(process.env.DATA_BASE_URL, {
+        useFindAndModify: false,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      })
+      .then(() => console.log(SuccessMsg("Connected to the database!")))
+      .catch((err) => console.log(ErrorMsg(err.message)));
 
-app.use(eventRouter);
-app.use(usertRouter);
-app.use(authenticationRouter);
-app.use(imgRouter);
-app.use(messageRouter);
+    app.listen(PORT, (err) => {
+      err
+        ? console.log(ErrorMsg(err))
+        : console.log(SuccessMsg(`Server started, порт:${chalk.red(PORT)}!`));
+    });
+  } catch (e) {
+    console.log(ErrorMsg(e));
+  }
+};
+start();

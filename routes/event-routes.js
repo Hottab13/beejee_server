@@ -1,25 +1,32 @@
-const express = require('express');
-const router = express.Router();
+const Router = require("express");
+const router = new Router();
 const {
-    getEvent,
-    getEvents,
-    postAddEvent,
-    deleteEvent,
-    putEvent,
-    getEventsUser,
-    ubdateMembersEvent,
-    filtrEvent
-} = require('../controllers/event-controller');
-const {authenticateToken} = require('../utils/authToken');
-const upload = require('../utils/multerUpload');
+  getAllEvents,
+  addUserEvent,
+  delUserEvent,
+  postFiltrEvent,
+  getEvent,
+  createEvent,
+  deleteEvent,
+  createEventImg,
+  editEventData,
+} = require("../controllers/event-controller");
+const authMiddlewares = require("../middlewares/auth-middlewares");
+const upload = require("../middlewares/multerUpload-middlewares");
 
-router.get('/api/event/:id', getEvent);
-router.get('/api/events-user/:id', getEventsUser);
-router.get('/api/events', getEvents);
-router.post('/api/add-event',upload.single('image'), authenticateToken, postAddEvent);
-router.delete('/api/event/:id', authenticateToken, deleteEvent);
-router.put('/api/edit-event/:id',upload.single('image'), authenticateToken, putEvent);
-router.put('/api/ubdate-member-event/:id',upload.single('image'), authenticateToken, ubdateMembersEvent);
-router.post('/api/filtr-events',upload.single('image'), filtrEvent);
+router.get("/events", getAllEvents);
+router.get("/event/:id", getEvent);
+router.post("/filtr-events", postFiltrEvent);
+router.patch("/add-user-event/:id", authMiddlewares, addUserEvent);
+router.patch("/del-user-event/:id", authMiddlewares, delUserEvent);
+router.post("/create-event/:id", authMiddlewares, createEvent);
+router.post(
+  "/create-event-img/:id",
+  upload.single("fileEvent"),
+  authMiddlewares,
+  createEventImg
+);
+router.delete("/event/:id", authMiddlewares, deleteEvent);
+router.patch("/edit-event-data/:id", authMiddlewares, editEventData);
 
 module.exports = router;

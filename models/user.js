@@ -1,52 +1,47 @@
-const mongoose = require('mongoose');
-const dateAge = new Date();
-dateAge.setDate(dateAge.getDate() - 4380);
-const userSchema = mongoose.Schema({
-    email:{
-        type:String,
-        required:true
+const { Schema, model } = require("mongoose");
+const userSchema = Schema(
+  {
+    email: {
+      type: String,
+      required: true,
     },
-    password:{
-        type:String,
-        required:true
+    password: {
+      type: String,
+      required: true,
     },
-    name:{
-        type:String,
-        required:true
+    isActivated: {
+      type: Boolean,
+      default: false,
     },
-    surname:{
-        type:String,
+    activLink: {
+      type: String,
     },
-    sex:{
-        type:Boolean,
+    data: {
+      userName: {
+        type: String,
+        required: true,
+      },
+      userSurname: {
+        type: String || null,
+      },
+      userGender: {
+        type: String || null,
+      },
+      userPhone: {
+        type: String || null,
+      },
+      usersDateBirth: {
+        type: Date || null,
+      },
+      status: {
+        type: String,
+      },
+      aboutMe: {
+        type: String,
+      },
     },
-    age:{
-        type:Date,
-        //min: '1925-00-00',
-        //max: dateAge
-    },
-    status:{
-        type:String,
-    },
-    aboutMe:{
-        type:String,
-    },
-    imgAvatar: {
-        img_200_200:
-        {
-            data: Buffer,
-            contentType: String,
-            originalname: String
-        },
-        img_1000_1000:
-        {
-            data: Buffer,
-            contentType: String,
-            originalname: String
-        }
-    },
-},{timestamps:true})
+  },
+  { timestamps: true }
+);
 
-const User = mongoose.model(`User`, userSchema );
-
-module.exports = User;
+module.exports = model(`User`, userSchema);

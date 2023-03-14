@@ -1,73 +1,82 @@
-const User = require('../models/user');
-const handlErr = require('../utils/handlErr');
-const {generateAccessToken} = require('../utils/authToken');
-const jwt = require('jsonwebtoken');
+const { validationResult } = require("express-validator");
 
-const getLogin = (req, res) => {
-    const {
-        email,
-        password
-    } = req.body;
-    User
-        .findOne({
-            email,
-            password
-        })
-        .then((result) => {
-            if (result) {
-                const token = generateAccessToken({
-                    email: req.body.email
-                },
-                result//._id
-            );
-                res.status(200).json(token)
-            } else {
-                handlErr("Ошибка! Логин или пароль не верны!", res.status(500))
-            }
-        })
-        .catch((err) => handlErr(err.message, res.status(500)))
-}
-const getToken = (req, res) => {
-    const token = req.headers['authorization']
-    //const token = authHeader && authHeader.split(' ')[1]
-    if (token == null) return handlErr("Ошибка! Отсутствует токен аунтификации!", res.status(401))
-    jwt.verify(token, process.env.TOKEN_KEY, (err, user) => {
-            if (err) return handlErr(err.message, res.status(403))
-            User
-                .findOne({
-                    email: user.email
-                })
-                .then((result) => res.status(200).json(result))
-                .catch((err) => handlErr(err.message, res.status(500)))
-        }
-    )
-}
-const postRegistration = (req, res) => {
-    const {
-        email,
-        password,
-        name,
-    } = req.body;
-    const user = new User({
-        email,
-        password,
-        name,
-    })
-    user
-        .save()
-        .then((result) => {
-            const token = generateAccessToken({
-                    email: req.body.email
-                },
-                result._id
-            );
-            res.status(200).json(token)
-        })
-        .catch((err) => handlErr(err.message, res.status(500)))
-}
+const {
+  registrtion,
+  activate,
+  login,
+  logout,
+  refresh,
+} = require("../service/auth-service");
+const ApiErrors = require("../exceptions/error-api");
+
+const postLogin = async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return next(ApiErrors.BadRequest("Ошибка валидации", errors.array()));
+    }
+    const { email, password } = req.body;
+    const userData = await login(email, password);
+    res.cookie("refreshToken", userData.refreshToken, {
+      maxAge: 30 * 24 ** 60 * 60 * 1000,
+      httpOnly: true,
+    });
+    res.json(userData);
+  } catch (e) {
+    next(e);
+  }
+};
+const postRegistration = async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return next(ApiErrors.BadRequest("Ошибка валидации", errors.array()));
+    }
+    const { email, password, userName } = req.body;
+    const userData = await registrtion(email, password, userName);
+    res.json(userData);
+  } catch (e) {
+    next(e);
+  }
+};
+const postLogout = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.cookies;
+    const token = await logout(refreshToken);
+    res.clearCookie("refreshToken");
+    return res.json(token);
+  } catch (e) {
+    next(e);
+  }
+};
+const getActivate = async (req, res, next) => {
+  try {
+    const activLink = req.params.link;
+    await activate(activLink);
+    return res.redirect(process.env.CLIENT_URL);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const getRefresh = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.cookies;
+    const userData = await refresh(refreshToken);
+    res.cookie("refreshToken", userData.refreshToken, {
+      maxAge: 30 * 24 ** 60 * 60 * 1000,
+      httpOnly: true,
+    });
+    res.json(userData);
+  } catch (e) {
+    next(e);
+  }
+};
 
 module.exports = {
-    getLogin,
-    postRegistration,
-    getToken
-}
+  postLogout,
+  getRefresh,
+  getActivate,
+  postLogin,
+  postRegistration,
+};

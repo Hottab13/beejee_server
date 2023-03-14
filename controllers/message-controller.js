@@ -1,5 +1,4 @@
 const Message = require('../models/message');
-const handlErr = require('../utils/handlErr');
 
 /*Message.find(({ users: { "$in" : [#user1#,#user2#]} })
     .sort({ updatedAt: -1 })
