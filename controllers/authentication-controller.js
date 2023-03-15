@@ -19,7 +19,7 @@ const postLogin = async (req, res, next) => {
     const userData = await login(email, password);
     res.cookie("refreshToken", userData.refreshToken, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
-      //httpOnly: true,
+      httpOnly: false,
     });
     res.json(userData);
   } catch (e) {
@@ -67,7 +67,7 @@ const getRefresh = async (req, res, next) => {
     console.log("Какой токен вернет"+userData.refreshToken)
     res.cookie("refreshToken", userData.refreshToken, { 
       maxAge: 30 * 24 * 60 * 60 * 1000,
-      //httpOnly: true,
+      httpOnly: false,
     });
     res.json(userData);
   } catch (e) {
