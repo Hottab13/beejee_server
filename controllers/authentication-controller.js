@@ -17,10 +17,10 @@ const postLogin = async (req, res, next) => {
     }
     const { email, password } = req.body;
     const userData = await login(email, password);
-    res.cookie("refreshToken", userData.refreshToken, {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-      httpOnly: false,
-    });
+    res.cookie("refreshToken", userData.refreshToken, { expires: new Date(Date.now() + 900000), httpOnly: true, secure: true }
+      /*{maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    }*/);
     res.json(userData);
   } catch (e) {
     next(e);
@@ -65,10 +65,11 @@ const getRefresh = async (req, res, next) => {
     console.log(refreshToken)
     const userData = await refresh(refreshToken);
     console.log("Какой токен вернет"+userData.refreshToken)
-    res.cookie("refreshToken", userData.refreshToken, { 
+    res.cookie("refreshToken", userData.refreshToken, { expires: new Date(Date.now() + 900000), httpOnly: true, secure: true }
+    /*{ 
       maxAge: 30 * 24 * 60 * 60 * 1000,
-      httpOnly: false,
-    });
+      httpOnly: true,
+    }*/);
     res.json(userData);
   } catch (e) {
     next(e);
