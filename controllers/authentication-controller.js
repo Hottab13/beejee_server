@@ -17,7 +17,7 @@ const postLogin = async (req, res, next) => {
     }
     const { email, password } = req.body;
     const userData = await login(email, password);
-    res.cookie("refreshToken", userData.refreshToken, { expires: new Date(Date.now() + 900000), httpOnly: true, secure: true }
+    res.cookie("refreshToken", userData.refreshToken, { expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), httpOnly: false, secure: false }
       /*{maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     }*/);
@@ -62,10 +62,10 @@ const getActivate = async (req, res, next) => {
 const getRefresh = async (req, res, next) => {
   try {
     const { refreshToken } = req.cookies;
-    console.log(refreshToken)
+    console.log("кука"+refreshToken)
     const userData = await refresh(refreshToken);
     console.log("Какой токен вернет"+userData.refreshToken)
-    res.cookie("refreshToken", userData.refreshToken, { expires: new Date(Date.now() + 900000), httpOnly: true, secure: true }
+    res.cookie("refreshToken", userData.refreshToken, { expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), httpOnly: false, secure: false }
     /*{ 
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
