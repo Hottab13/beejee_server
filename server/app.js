@@ -17,7 +17,7 @@ const ErrorMsg = chalk.bgWhite.red;
 const SuccessMsg = chalk.green;
 
 app.use(express.json());
-app.use(cors({ credentials: false, origin: `${process.env.CLIENT_URL}` }));
+app.use(cors({ credentials: true, origin: `${process.env.CLIENT_URL}` }));
 app.use(cookieParser());
 app.use("/api", eventRouter);
 app.use("/api", authenticationRouter);
