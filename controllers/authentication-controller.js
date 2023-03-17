@@ -9,6 +9,14 @@ const {
 } = require("../service/auth-service");
 const ApiErrors = require("../exceptions/error-api");
 
+const resCookie = (refreshToken) =>
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+    maxAge: 24 * 60 * 60 * 1000,
+  });
+
 const postLogin = async (req, res, next) => {
   try {
     const errors = validationResult(req);
@@ -17,7 +25,7 @@ const postLogin = async (req, res, next) => {
     }
     const { email, password } = req.body;
     const userData = await login(email, password);
-    res.cookie("refreshToken", userData.refreshToken, {httpOnly: true, sameSite: 'none', secure: true , maxAge: 24 * 60 * 60 * 1000});
+    resCookie(userData.refreshToken);
     res.json(userData);
   } catch (e) {
     next(e);
@@ -58,12 +66,9 @@ const getActivate = async (req, res, next) => {
 
 const getRefresh = async (req, res, next) => {
   try {
-    console.log(req.cookies)
     const { refreshToken } = req.cookies;
-    console.log("кука"+refreshToken)
     const userData = await refresh(refreshToken);
-    console.log("Какой токен вернет"+userData.refreshToken)
-    res.cookie("refreshToken", userData.refreshToken, {httpOnly: true, sameSite: 'none', secure: true , maxAge: 24 * 60 * 60 * 1000});
+    resCookie(userData.refreshToken);
     res.json(userData);
   } catch (e) {
     next(e);
