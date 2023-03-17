@@ -86,21 +86,16 @@ const refresh = async (refreshToken) => {
     throw ApiErrors.UnauthorizedError();
   }
   const userData = validationRefreshToken(refreshToken);
-  console.log("данные с токена"+userData)
   const tokenFreshDb = await findToken(refreshToken);
-  console.log("Поиск токена"+tokenFreshDb)
   if (!userData || !tokenFreshDb) {
-    console.log("Какая то ошибка кого то нету")
     throw ApiErrors.UnauthorizedError();
   }
-  console.log(userData.id)
   const o_id = new ObjectId(userData.id);
   const imgUser = await ImageUser.findOne({ user: o_id });
   const user = await User.findById(userData.id);
   const UserDtos = UserDto(user);
 
   const tokens = generateAccessToken({ ...UserDtos });
-  console.log("Новый рефреш токен"+tokens.refreshToken)
   await saveToken(UserDtos.id, tokens.refreshToken);
   
   const userEvents = await Event.find({

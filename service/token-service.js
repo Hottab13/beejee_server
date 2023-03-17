@@ -19,12 +19,10 @@ const saveToken = async (user, refreshToken) => {
   const o_id = new ObjectId(user);
   const tokenData = await Token.findOne({ user: o_id });
   if (tokenData) {
-    console.log("Токен есть"+tokenData)
     tokenData.refreshToken = refreshToken;
     return tokenData.save();
   }
   const token = await Token.create({ user, refreshToken });
-  console.log("Токена нету"+token)
   return token;
 };
 const removeToken = async (refreshToken) => {

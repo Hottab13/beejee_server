@@ -10,7 +10,6 @@ const usertRouter = require(`../routes/user-routes`);
 const authenticationRouter = require(`../routes/authentication-routes`);
 const errorsMiddlewares = require(`../middlewares/errors-middlewares`);
 
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 const ErrorMsg = chalk.bgWhite.red;
@@ -20,7 +19,6 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({ credentials: true, origin:[ "http://localhost:3000",`${process.env.CLIENT_URL}`]}));
-//app.use(cors({ credentials: true, origin:[ `${process.env.CLIENT_URL}`,"http://localhost:3000"], exposedHeaders: ["set-cookie"] }));
 app.use("/api", eventRouter);
 app.use("/api", authenticationRouter);
 app.use("/api", usertRouter);
