@@ -1,5 +1,6 @@
-const Router = require("express");
 const { body } = require("express-validator");
+const Router = require("express");
+const router = new Router();
 
 const {
   postLogin,
@@ -8,8 +9,6 @@ const {
   getRefresh,
   getActivate,
 } = require("../controllers/authentication-controller");
-
-const router = new Router();
 
 router.post(
   "/registration",
