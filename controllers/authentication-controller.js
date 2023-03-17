@@ -9,15 +9,6 @@ const {
 } = require("../service/auth-service");
 const ApiErrors = require("../exceptions/error-api");
 
-const resCookie = (refreshToken) => {
-  return res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    sameSite: "none",
-    secure: true,
-    maxAge: 24 * 60 * 60 * 1000,
-  });
-};
-
 const postLogin = async (req, res, next) => {
   try {
     const errors = validationResult(req);
@@ -26,7 +17,12 @@ const postLogin = async (req, res, next) => {
     }
     const { email, password } = req.body;
     const userData = await login(email, password);
-    resCookie(userData.refreshToken);
+    res.cookie("refreshToken", userData.refreshToken, {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
     res.json(userData);
   } catch (e) {
     next(e);
@@ -69,7 +65,12 @@ const getRefresh = async (req, res, next) => {
   try {
     const { refreshToken } = req.cookies;
     const userData = await refresh(refreshToken);
-    resCookie(userData.refreshToken);
+    res.cookie("refreshToken", userData.refreshToken, {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
     res.json(userData);
   } catch (e) {
     next(e);
