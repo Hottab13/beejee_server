@@ -9,13 +9,14 @@ const {
 } = require("../service/auth-service");
 const ApiErrors = require("../exceptions/error-api");
 
-const resCookie = (refreshToken) =>
-  res.cookie("refreshToken", refreshToken, {
+const resCookie = (refreshToken) => {
+  return res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     sameSite: "none",
     secure: true,
     maxAge: 24 * 60 * 60 * 1000,
   });
+};
 
 const postLogin = async (req, res, next) => {
   try {
