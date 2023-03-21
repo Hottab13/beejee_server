@@ -12,6 +12,9 @@ const {
 
 const getAllEvents = async (req, res, next) => {
   try {
+    console.log(req.query.limit)
+    console.log(req.query.type)
+    
     const events = await allEventsServise();
     return res.json(events);
   } catch (e) {

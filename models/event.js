@@ -1,4 +1,5 @@
 const { Schema, model, Decimal128 } = require("mongoose");
+const mongoosePaginate = require('mongoose-paginate');
 /*const nowDate = new Date();
 const nowDate_365 = new Date();
 nowDate_365.setDate(nowDate_365.getDate() + 365);*/
@@ -71,5 +72,5 @@ const eventSchema = new Schema(
     timestamps: true,
   }
 );
-
+eventSchema.plugin(mongoosePaginate);
 module.exports = model(`Event`, eventSchema);

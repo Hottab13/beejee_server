@@ -10,14 +10,17 @@ const ApiErrors = require("../exceptions/error-api");
 const { userSharpPhoto } = require("./sharp-service");
 
 const allEventsServise = async () => {
-  const events = await Event.find({}, "-imgAvatar.img_1000_1000 -field")
+
+  const events = await Event.paginate({}, { page: 1, limit: 5,  sort: { createdAt: -1 }, });
+
+  /*const events = await Event.find({}, "-imgAvatar.img_1000_1000 -field")
     //.limit(4)
     .sort({
       createdAt: -1,
-    });
+    });*/
   const arrOwnerUserEvents = [];
   const arrImgEventsId = [];
-  events.map((el) => {
+  events.docs.map((el) => {
     arrOwnerUserEvents.push(el.ownerUser);
     arrImgEventsId.push(el._id);
   });
@@ -27,13 +30,11 @@ const allEventsServise = async () => {
   });
   const uniqueImgUsers = await ImageUser.find({
     user: uniqueId,
-  });
+  },"-img_1000_1000 -field");
   const ImgEvents = await ImageEvent.find(
     {
       event: arrImgEventsId,
-    },
-    "-imgAvatar.img_1000_1000 -field"
-  );
+    },"-img_1000_1000 -field");
   return { events, uniqueUsers, uniqueImgUsers, ImgEvents };
 };
 const getEventServise = async (id) => {

@@ -7,6 +7,7 @@ const Event = require("../models/event");
 const ImageUser = require("../models/imageUser");
 const ApiErrors = require("../exceptions/error-api");
 const { userSharpPhoto } = require("./sharp-service");
+const imageEvent = require("../models/imageEvent");
 
 const upgradeUserData = async (upReqUserData, id) => {
   const candidate = await User.findById(id, "-password -field");
@@ -71,24 +72,31 @@ const upgradeUserPhoto = async (fileData, id) => {
       originalname: fileData.originalname,
     },
   });
-
-  
   return {
     createNewUserImg,
   };
 };
 
 const getUsersId = async (id) => {
+  const arrImgEventsId = [];
   if (!id) {
     throw ApiErrors.BadRequest(`Ошибка при загрузке пользователя!`);
   }
   const user = await User.findById(id, "-password -field");
-  const o_id = new ObjectId(id);
-  const imgUser = await ImageUser.findOne({ user: o_id });
+  const imgUser = await ImageUser.findOne({ user: new ObjectId(id) });
   const userEvents = await Event.find({
     ownerUser:id,
   });
-  return { user, imgUser, userEvents };
+  userEvents.map((el) => {
+    arrImgEventsId.push(el._id);
+  });
+  const userImgEvents = await imageEvent.find(
+    {
+      event: arrImgEventsId,
+    },
+    "-imgAvatar.img_1000_1000 -field"
+  );
+  return { user, imgUser, userEvents,userImgEvents };
 };
 
 const getAllUsers = async () => {
