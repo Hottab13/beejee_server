@@ -23,7 +23,7 @@ const resUserData = async (userData) => {
     },
     "-imgAvatar.img_1000_1000 -field"
   );
-  return { ...tokens, user: userData, userImgEvents, userEvents, imgUser };
+  return { ...tokens, userData: userData, userImgEvents, userEvents, imgUser };
 };
 
 module.exports = { resUserData };

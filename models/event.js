@@ -37,17 +37,17 @@ const eventSchema = new Schema(
     },
     startDate: {
       type: Date,
-      required: true,
+      //required: true,
     },
     endDate: {
       type: Date,
-      required: true,
+      //required: true,
     },
-    dateOfTheEvent: [
+    /*dateOfTheEvent: [
       {
         type: Date,
       },
-    ],
+    ],*/
     /*ageRestrictions: {
         type: Number,
         min: 18,
@@ -55,7 +55,7 @@ const eventSchema = new Schema(
     },*/
     amountMaximum: {
       type: Number,
-      required: true,
+     // required: true,
     },
     users: [
       {

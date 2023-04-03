@@ -82,7 +82,7 @@ const getUsersId = async (id) => {
   if (!id) {
     throw ApiErrors.BadRequest(`Ошибка при загрузке пользователя!`);
   }
-  const user = await User.findById(id, "-password -field");
+  const userData = await User.findById(id, "-password -field");
   const imgUser = await ImageUser.findOne({ user: new ObjectId(id) });
   const userEvents = await Event.find({
     ownerUser:id,
@@ -96,7 +96,7 @@ const getUsersId = async (id) => {
     },
     "-imgAvatar.img_1000_1000 -field"
   );
-  return { user, imgUser, userEvents,userImgEvents };
+  return { userData, imgUser, userEvents,userImgEvents };
 };
 
 const getAllUsers = async () => {

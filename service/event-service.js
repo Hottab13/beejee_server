@@ -9,15 +9,15 @@ const Event = require("../models/event");
 const ApiErrors = require("../exceptions/error-api");
 const { userSharpPhoto } = require("./sharp-service");
 
-const allEventsServise = async () => {
-
-  const events = await Event.paginate({}, { page: 1, limit: 5,  sort: { createdAt: -1 }, });
-
-  /*const events = await Event.find({}, "-imgAvatar.img_1000_1000 -field")
-    //.limit(4)
-    .sort({
-      createdAt: -1,
-    });*/
+const allEventsServise = async (params) => {
+  const events = await Event.paginate(
+    {
+      type: { $regex: params.type ||""},
+      city: { $regex: params.citySearch ||""},
+      name: { $regex: params.search||"", $options: "$ix"},
+    },
+    { page: Number(params.page) || 1, limit: Number(params.limit) || 10, sort: { startDate: -1 } }
+  );
   const arrOwnerUserEvents = [];
   const arrImgEventsId = [];
   events.docs.map((el) => {
@@ -28,13 +28,18 @@ const allEventsServise = async () => {
   const uniqueUsers = await User.find({
     _id: uniqueId,
   });
-  const uniqueImgUsers = await ImageUser.find({
-    user: uniqueId,
-  },"-img_1000_1000 -field");
+  const uniqueImgUsers = await ImageUser.find(
+    {
+      user: uniqueId,
+    },
+    "-img_1000_1000 -field"
+  );
   const ImgEvents = await ImageEvent.find(
     {
       event: arrImgEventsId,
-    },"-img_1000_1000 -field");
+    },
+    "-img_1000_1000 -field"
+  );
   return { events, uniqueUsers, uniqueImgUsers, ImgEvents };
 };
 const getEventServise = async (id) => {
@@ -55,22 +60,6 @@ const getEventServise = async (id) => {
     _id: eventProfile.ownerUser,
   });
   return { eventProfile, partyUsers, partyUsersImg, eventImg, ownerUserData };
-};
-const filtrEventServise = async (params) => {
-  console.log(params);
-  const filtrEventsRes = await Event.find({
-    $or: [
-      //{ name: params.search || null },
-      { type: params.type || "" },
-      // { dateOfTheEvent: { $lt: req.body.status } },
-    ],
-  })
-    .limit(20)
-    .sort({
-      createdAt: -1,
-    });
-  console.log(filtrEventsRes);
-  return filtrEventsRes;
 };
 const addUserEventServise = async (id, userId) => {
   if (!id) {
@@ -125,12 +114,12 @@ const createEventImgServise = async (fileData, id) => {
     throw ApiErrors.BadRequest(`Ошибка при загрузки файла события!`);
   }
   await userSharpPhoto(fileData);
-  fs.unlink(path.join(__dirname, "../uploads", fileData.filename),(err => {
+  fs.unlink(path.join(__dirname, "../uploads", fileData.filename), (err) => {
     if (err) console.log(err);
     else {
-      console.log("\nDeleted file:"+fileData.filename);
+      console.log("\nDeleted file:" + fileData.filename);
     }
-  }));
+  });
   const imgEvent = await ImageEvent.findOne({ event: o_id });
   if (imgEvent) {
     imgEvent.img_200_200 = {
@@ -180,12 +169,12 @@ const editEventDataServise = async (id, data) => {
     {
       startDate: data.startDate,
       endDate: data.endDate,
-      about: data.eventAbout,
-      name: data.eventName,
-      amountMaximum: data.participantRestriction,
-      type: data.eventType,
-      city: data.eventCity,
-      address: data.eventAddress,
+      about: data.about,
+      address: data.address,
+      city: data.city,
+      name: data.name,
+      amountMaximum: data.amountMaximum,
+      type: data.type,
     },
     { new: true }
   );
@@ -195,7 +184,6 @@ const editEventDataServise = async (id, data) => {
 module.exports = {
   allEventsServise,
   getEventServise,
-  filtrEventServise,
   addUserEventServise,
   delUserEventServise,
   createEventServise,

@@ -6,10 +6,12 @@ module.exports = class ApiErrors extends Error {
     this.status = status;
     this.errors = errors;
   }
-  static UnauthorizedError() {
-    return new ApiErrors(401, "Пользователь не авторизован");
+  static UnauthorizedError(message) {
+    return new ApiErrors(401, message,);
   }
   static BadRequest(message, errors = []) {
+    //console.log(message)
+   // console.log(errors)
     return new ApiErrors(400, message, errors);
   }
 };

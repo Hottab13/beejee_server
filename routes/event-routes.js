@@ -16,7 +16,7 @@ const upload = require("../middlewares/multerUpload-middlewares");
 
 router.get("/events/", getAllEvents);
 router.get("/event/:id", getEvent);
-router.post("/filtr-events", postFiltrEvent);
+router.post("/filtr-events", getAllEvents);
 router.patch("/add-user-event/:id", authMiddlewares, addUserEvent);
 router.patch("/del-user-event/:id", authMiddlewares, delUserEvent);
 router.post("/create-event/:id", authMiddlewares, createEvent);

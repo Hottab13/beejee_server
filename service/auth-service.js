@@ -23,7 +23,7 @@ const registrtion = async (email, password, userName) => {
     throw ApiErrors.BadRequest(`Пользователь ${email} уже существует!`);
   }
   const hashPassword = await bcrypt.hash(password, saltRounds);
-  const userData = await User.create({
+  await User.create({
     email,
     password: hashPassword,
     activLink,
@@ -31,16 +31,12 @@ const registrtion = async (email, password, userName) => {
       userName,
     },
   });
-  const UserDtos = UserDto(userData);
   await sendActivationMail(
     email,
     `${process.env.API_URL}api/activate/${activLink}`
   );
-  const tokens = generateAccessToken({ ...UserDtos });
-  await saveToken(UserDtos.id, tokens.refreshToken);
   return {
-    ...tokens,
-    user: UserDtos,
+    message: `Пользователь ${userName} успешно зарегистрирован! Пожалуйста активируйте ваш аккаунт с помощью почты ${email}!`,
   };
 };
 const activate = async (activLink) => {
@@ -69,12 +65,12 @@ const logout = async (refreshToken) => {
 };
 const refresh = async (refreshToken) => {
   if (!refreshToken) {
-    throw ApiErrors.UnauthorizedError();
+    throw ApiErrors.UnauthorizedError("Токен аунтификации не найден не найден!");
   }
   const reqValidationUser = validationRefreshToken(refreshToken);
   const tokenFreshDb = await findToken(refreshToken);
   if (!reqValidationUser || !tokenFreshDb) {
-    throw ApiErrors.UnauthorizedError();
+    throw ApiErrors.UnauthorizedError("Токен не прошел валидацию!");
   }
   const userData = await User.findById(reqValidationUser.id);
   const resData = await resUserData(userData);
