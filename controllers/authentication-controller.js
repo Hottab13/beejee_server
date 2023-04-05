@@ -19,8 +19,8 @@ const postLogin = async (req, res, next) => {
     const userData = await login(email, password);
     res.cookie("refreshToken", userData.refreshToken, {
       httpOnly: true,
-      sameSite: "none",
-      secure: true,
+      //sameSite: "none",
+      //secure: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
     res.json(userData);
