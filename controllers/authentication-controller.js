@@ -23,6 +23,7 @@ const postLogin = async (req, res, next) => {
       //secure: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
+    console.log(userData.refreshToken)
     res.json(userData);
   } catch (e) {
     next(e);
@@ -64,6 +65,7 @@ const getActivate = async (req, res, next) => {
 const getRefresh = async (req, res, next) => {
   try {
     const { refreshToken } = req.cookies;
+    console.log(refreshToken)
     const userData = await refresh(refreshToken);
     res.cookie("refreshToken", userData.refreshToken, {
       httpOnly: true,
