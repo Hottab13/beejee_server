@@ -18,7 +18,7 @@ const SuccessMsg = chalk.green;
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(cors({ credentials: true, origin:`${process.env.CLIENT_URL}`}));
+app.use(cors({ credentials: true, origin:["http://localhost:3000",`${process.env.CLIENT_URL}`]}));
 app.use("/api", eventRouter);
 app.use("/api", authenticationRouter);
 app.use("/api", usertRouter);
