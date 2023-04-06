@@ -13,10 +13,10 @@ const allEventsServise = async (params) => {
   const events = await Event.paginate(
     {
       type: { $regex: params.type ||""},
-      city: { $regex: params.citySearch ||""},
+      city: { $regex: params.city ||""},
       name: { $regex: params.search||"", $options: "$ix"},
     },
-    { page: Number(params.page) || 1, limit: Number(params.limit) || 10, sort: { startDate: -1 } }
+    { page: Number(params.page) || 1, limit: Number(params.limit) || 5, sort: { startDate: -1 } }
   );
   const arrOwnerUserEvents = [];
   const arrImgEventsId = [];
