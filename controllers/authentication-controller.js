@@ -20,7 +20,7 @@ const postLogin = async (req, res, next) => {
     res.cookie("refreshToken", userData.refreshToken, {
       httpOnly: true,
       //sameSite: "none",
-      secure: false,
+      //secure: false,
       maxAge: 24 * 60 * 60 * 1000,
     });
     console.log(userData.refreshToken)
@@ -61,7 +61,6 @@ const getActivate = async (req, res, next) => {
     next(e);
   }
 };
-
 const getRefresh = async (req, res, next) => {
   try {
     const { refreshToken } = req.cookies;
