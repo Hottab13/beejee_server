@@ -18,9 +18,9 @@ const postLogin = async (req, res, next) => {
     const { email, password } = req.body;
     const userData = await login(email, password);
     res.cookie("refreshToken", userData.refreshToken, {
-      httpOnly: true,
+      httpOnly: false,
       //sameSite: "none",
-      //secure: false,
+      secure: false,
       maxAge: 24 * 60 * 60 * 1000,
     });
     console.log(userData.refreshToken)
@@ -67,9 +67,9 @@ const getRefresh = async (req, res, next) => {
     console.log(refreshToken)
     const userData = await refresh(refreshToken);
     res.cookie("refreshToken", userData.refreshToken, {
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
+      httpOnly: false,
+      //sameSite: "none",
+      secure: false,
       maxAge: 24 * 60 * 60 * 1000,
     });
     res.json(userData);
