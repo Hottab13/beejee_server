@@ -64,7 +64,7 @@ const getActivate = async (req, res, next) => {
 const getRefresh = async (req, res, next) => {
   try {
     const { refreshToken } = req.cookies;
-    console.log(refreshToken)
+    console.log(req.cookies)
     const userData = await refresh(refreshToken);
     res.cookie("refreshToken", userData.refreshToken, {
       httpOnly: false,
