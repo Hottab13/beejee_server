@@ -16,7 +16,7 @@ const allEventsServise = async (params) => {
       city: { $regex: params.city ||""},
       name: { $regex: params.search||"", $options: "$ix"},
     },
-    { page: Number(params.page) || 1, limit: Number(params.limit) || 5, sort: { startDate: -1 } }
+    { page: Number(params.page) || 1, limit: Number(params.limit) || 6, sort: { startDate: -1 } }
   );
   const arrOwnerUserEvents = [];
   const arrImgEventsId = [];
