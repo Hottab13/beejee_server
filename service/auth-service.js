@@ -31,12 +31,12 @@ const registrtion = async (email, password, userName) => {
       userName,
     },
   });
-  await sendActivationMail(
+  /*await sendActivationMail(
     email,
     `${process.env.API_URL}api/activate/${activLink}`
-  );
+  );*/
   return {
-    message: `Пользователь ${userName} успешно зарегистрирован! Пожалуйста активируйте ваш аккаунт с помощью почты ${email}!`,
+    message: `Пользователь ${userName} успешно зарегистрирован! Ввойдите в ваш аккаунт ${email}!`// Пожалуйста активируйте ваш аккаунт с помощью почты ${email}!`,
   };
 };
 const activate = async (activLink) => {

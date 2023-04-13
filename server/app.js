@@ -49,7 +49,7 @@ const start = async () => {
       .then(() => console.log(SuccessMsg("Connected to the database!")))
       .catch((err) => console.log(ErrorMsg(err.message)));
 
-    server.listen(PORT, (err) => {
+      server.listen(PORT, (err) => {
       err
         ? console.log(ErrorMsg(err))
         : console.log(SuccessMsg(`Server started, порт:${chalk.red(PORT)}!`));

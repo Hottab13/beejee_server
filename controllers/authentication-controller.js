@@ -37,6 +37,7 @@ const postRegistration = async (req, res, next) => {
     }
     const { email, password, userName } = req.body;
     const userData = await registrtion(email, password, userName);
+    console.log(userData)
     res.json(userData);
   } catch (e) {
     next(e);

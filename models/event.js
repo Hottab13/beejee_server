@@ -1,5 +1,6 @@
 const { Schema, model, Decimal128 } = require("mongoose");
-const mongoosePaginate = require('mongoose-paginate');
+//const mongoosePaginate = require('mongoose-paginate');
+const mongoosePaginate = require('mongoose-paginate-v2');
 /*const nowDate = new Date();
 const nowDate_365 = new Date();
 nowDate_365.setDate(nowDate_365.getDate() + 365);*/

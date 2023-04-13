@@ -10,13 +10,25 @@ const ApiErrors = require("../exceptions/error-api");
 const { userSharpPhoto } = require("./sharp-service");
 
 const allEventsServise = async (params) => {
+  /*const options = {
+    page: 1,
+    limit: 10,
+    collation: {
+      locale: "en",
+    },
+  };*/
+  const options = {
+    page: Number(params.page) || 1,
+    limit: Number(params.limit) || 6,
+    sort: { startDate: -1 },
+  };
   const events = await Event.paginate(
     {
-      type: { $regex: params.type ||""},
-      city: { $regex: params.city ||""},
-      name: { $regex: params.search||"", $options: "$ix"},
+      type: { $regex: params.type || "" },
+      city: { $regex: params.city || "" },
+      name: { $regex: params.search || "",/* $options: "$ix"*/},
     },
-    { page: Number(params.page) || 1, limit: Number(params.limit) || 6, sort: { startDate: -1 } }
+    options
   );
   const arrOwnerUserEvents = [];
   const arrImgEventsId = [];
