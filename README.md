@@ -5,7 +5,7 @@
 Clone the project repository by running the command below
 
 ```bash
-git clone https://github.com/Hottab13/server_test.git
+git clone https://github.com/Hottab13/beejee_server.git
 ```
 
 After cloning, run:
@@ -20,6 +20,6 @@ Start the application:
 npm run dev
 ```
 
-The server will be running on (http://localhost:4741/).
+The server will be running on (http://localhost:5000/).
 
 
